@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 
-#define D 4 // Definimos D como constante para mayor claridad   
+#define D 4.0
+#define N 6.0 
 
 int main() {
     double X[6][4] = {{0, 6, 12, 18}, {1, 7, 13, 19}, {2, 8, 14, 20},
