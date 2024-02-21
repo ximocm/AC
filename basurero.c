@@ -7,85 +7,86 @@ int main() {
     int D = 4;
     int N = 6;
 
-    // Reservar memoria para bK, bQ, bV como matrices de punteros dobles
-    double *bK = (float *) malloc(N * sizeof(double *));
-    double *bQ = (float *) malloc(N * sizeof(double *));
-    double *bV = (float *) malloc(N * sizeof(double *));
-    
-    // Verificar si la memoria se ha asignado correctamente
-    if (bK == NULL || bQ == NULL || bV == NULL) {
-        fprintf(stderr, "Error: No se pudo asignar memoria\n");
-        return 1;
-    }
+    float *bK = (float *) malloc(D * sizeof(float));
+    float *bQ = (float *) malloc(D * sizeof(float));
+    float *bV = (float *) malloc(D * sizeof(float));
 
     // Reservar memoria para cada fila de bK, bQ, bV
-    for (int i = 0; i < N; i++) {
-        bK[i] = malloc(D * sizeof(double));
-        bQ[i] = malloc(D * sizeof(double));
-        bV[i] = malloc(D * sizeof(double));
-        
-        // Verificar si la memoria se ha asignado correctamente
-        if (bK[i] == NULL || bQ[i] == NULL || bV[i] == NULL) {
-            fprintf(stderr, "Error: No se pudo asignar memoria\n");
-            return 1;
-        }
+    float *WK_mem = (float *) malloc(D * D * sizeof(float));
+    float *WQ_mem = (float *) malloc(D * D * sizeof(float));
+    float *WV_mem = (float *) malloc(D * D * sizeof(float));
+
+    float **WK = (float **) malloc(D * sizeof(float *));
+    float **WQ = (float **) malloc(D * sizeof(float *));
+    float **WV = (float **) malloc(D * sizeof(float *));
+    for (int i = 0; i < D; i++) {
+        WK[i] = &WK_mem[i * D];
+        WQ[i] = &WQ_mem[i * D];
+        WV[i] = &WV_mem[i * D];
     }
 
     // Inicialización de X, WK, WQ, WV
-    double X[6][4] = {{0, 6, 12, 18}, {1, 7, 13, 19}, {2, 8, 14, 20},
-                     {3, 9, 15, 21}, {D, 10, 16, 22}, {5, 11, 17, 23}};
-    double WK[4][4] = {{-0.2, -0.1, 0.0, 0.1}, {-0.2, -0.1, 0.0, 0.1},
+    float X[6][4] = {{0, 6, 12, 18}, {1, 7, 13, 19}, {2, 8, 14, 20},
+                     {3, 9, 15, 21}, {4, 10, 16, 22}, {5, 11, 17, 23}};
+    float WK_values[4][4] = {{-0.2, -0.1, 0.0, 0.1}, {-0.2, -0.1, 0.0, 0.1},
                       {-0.2, -0.1, 0.0, 0.1}, {-0.2, -0.1, 0.0, 0.1}};
-    double WQ[4][4] = {{-0.2, -0.2, -0.2, -0.2}, {-0.1, -0.1, -0.1, -0.1},
+    float WQ_values[4][4] = {{-0.2, -0.2, -0.2, -0.2}, {-0.1, -0.1, -0.1, -0.1},
                       {0.0, 0.0, 0.0, 0.0}, {0.1, 0.1, 0.1, 0.1}};
-    double WV[4][4] = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0},
+    float WV_values[4][4] = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0},
                       {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
 
     // Inicialización de bK, bQ, bV
-    double bK_values[4] = {-1.0, -1.0, -1.0, -1.0};
-    double bQ_values[4] = {0.1, 0.1, 0.1, 0.1};
-    double bV_values[4] = {0.0, 0.0, 0.0, 0.0};
+    float bK_values[4] = {-1.0, -1.0, -1.0, -1.0};
+    float bQ_values[4] = {0.1, 0.1, 0.1, 0.1};
+    float bV_values[4] = {0.0, 0.0, 0.0, 0.0};
+
+    for(int i = 0; i < D; i++) {
+        bK[i] = bK_values[i];
+        bQ[i] = bQ_values[i];
+        bV[i] = bV_values[i];
+    }
+
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < D; j++) {
-            bK[i][j] = bK_values[j];
-            bQ[i][j] = bQ_values[j];
-            bV[i][j] = bV_values[j];
+            WK[i][j] = WK_values[i][j];
+            WQ[i][j] = WQ_values[i][j];
+            WV[i][j] = WV_values[i][j];
         }
     }
 
     // Calcular Kn
-    double Kn[N][D];
+    float Kn[N][D];
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < D; ++j) {
             Kn[i][j] = 0;
             for (size_t k = 0; k < D; ++k) {
                 Kn[i][j] += X[i][k] * WK[k][j];
             }
-            Kn[i][j] += *bK[j];
+            Kn[i][j] += bK[j];
         }
     }
 
     // Calcular Qn
-    double Qn[N][D];
+    float Qn[N][D];
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < D; ++j) {
             Qn[i][j] = 0;
             for (size_t k = 0; k < D; ++k) {
                 Qn[i][j] += X[i][k] * WQ[k][j];
             }
-            Qn[i][j] += *bQ[j];
+            Qn[i][j] += bQ[j];
         }
     }
 
     // Calcular Vn
-    double Vn[N][D];
+    float Vn[N][D];
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < D; ++j) {
             Vn[i][j] = 0;
             for (size_t k = 0; k < D; ++k) {
                 Vn[i][j] += X[i][k] * WV[k][j];
             }
-            Vn[i][j] += *bV[j];
+            Vn[i][j] += bV[j];
         }
     }
 
@@ -116,8 +117,8 @@ int main() {
         printf("\n");
     }
     
-    double A[N][N];
-    double sumatorio = 0.0;
+    float A[N][N];
+    float sumatorio = 0.0;
     for(size_t i=0; i<N; i++){
         for(size_t j=0; j<N; j++){
             sumatorio = 0.0;
@@ -138,9 +139,9 @@ int main() {
         printf("\n");
     }
 
-    double Anorm[N][N];
-    double exponente = 0.0;
-    double sumatorio_A = 0.0;
+    float Anorm[N][N];
+    float exponente = 0.0;
+    float sumatorio_A = 0.0;
     // Calculamos el sumatorio de A
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < N; ++j) {
@@ -163,7 +164,7 @@ int main() {
     }
 
 
-    double c[N][D];
+    float c[N][D];
     for(size_t i=0; i<N; i++){
         for(size_t j=0; j<D; j++){
             c[i][j] = 0.0;
@@ -181,16 +182,6 @@ int main() {
         }
         printf("\n");
     }
-
-
-     for (int i = 0; i < N; i++) {
-        free(bK[i]);
-        free(bQ[i]);
-        free(bV[i]);
-    }
-    free(bK);
-    free(bQ);
-    free(bV);
 
     return 0;
 
