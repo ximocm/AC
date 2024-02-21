@@ -1,14 +1,37 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 int main() {
+
     int D = 4;
     int N = 6;
 
-    double **bK = (int *) malloc (sizeof(int) *N);
-    double **bQ = (int *) malloc (sizeof(int) *N);
-    double **bV = (int *) malloc (sizeof(int) *N);
+    // Reservar memoria para bK, bQ, bV como matrices de punteros dobles
+    double *bK = (float *) malloc(N * sizeof(double *));
+    double *bQ = (float *) malloc(N * sizeof(double *));
+    double *bV = (float *) malloc(N * sizeof(double *));
+    
+    // Verificar si la memoria se ha asignado correctamente
+    if (bK == NULL || bQ == NULL || bV == NULL) {
+        fprintf(stderr, "Error: No se pudo asignar memoria\n");
+        return 1;
+    }
 
+    // Reservar memoria para cada fila de bK, bQ, bV
+    for (int i = 0; i < N; i++) {
+        bK[i] = malloc(D * sizeof(double));
+        bQ[i] = malloc(D * sizeof(double));
+        bV[i] = malloc(D * sizeof(double));
+        
+        // Verificar si la memoria se ha asignado correctamente
+        if (bK[i] == NULL || bQ[i] == NULL || bV[i] == NULL) {
+            fprintf(stderr, "Error: No se pudo asignar memoria\n");
+            return 1;
+        }
+    }
+
+    // Inicialización de X, WK, WQ, WV
     double X[6][4] = {{0, 6, 12, 18}, {1, 7, 13, 19}, {2, 8, 14, 20},
                      {3, 9, 15, 21}, {D, 10, 16, 22}, {5, 11, 17, 23}};
     double WK[4][4] = {{-0.2, -0.1, 0.0, 0.1}, {-0.2, -0.1, 0.0, 0.1},
@@ -17,10 +40,18 @@ int main() {
                       {0.0, 0.0, 0.0, 0.0}, {0.1, 0.1, 0.1, 0.1}};
     double WV[4][4] = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0},
                       {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
-    
+
+    // Inicialización de bK, bQ, bV
     double bK_values[4] = {-1.0, -1.0, -1.0, -1.0};
     double bQ_values[4] = {0.1, 0.1, 0.1, 0.1};
     double bV_values[4] = {0.0, 0.0, 0.0, 0.0};
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < D; j++) {
+            bK[i][j] = bK_values[j];
+            bQ[i][j] = bQ_values[j];
+            bV[i][j] = bV_values[j];
+        }
+    }
 
     // Calcular Kn
     double Kn[N][D];
@@ -42,7 +73,7 @@ int main() {
             for (size_t k = 0; k < D; ++k) {
                 Qn[i][j] += X[i][k] * WQ[k][j];
             }
-            Qn[i][j] += bQ[j];
+            Qn[i][j] += *bQ[j];
         }
     }
 
@@ -54,7 +85,7 @@ int main() {
             for (size_t k = 0; k < D; ++k) {
                 Vn[i][j] += X[i][k] * WV[k][j];
             }
-            Vn[i][j] += bV[j];
+            Vn[i][j] += *bV[j];
         }
     }
 
@@ -150,6 +181,16 @@ int main() {
         }
         printf("\n");
     }
+
+
+     for (int i = 0; i < N; i++) {
+        free(bK[i]);
+        free(bQ[i]);
+        free(bV[i]);
+    }
+    free(bK);
+    free(bQ);
+    free(bV);
 
     return 0;
 
