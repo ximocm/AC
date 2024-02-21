@@ -25,8 +25,14 @@ int main() {
         WV[i] = &WV_mem[i * D];
     }
 
+    float *X_mem = (float *) malloc(N * D * sizeof(float));
+    float **X = (float **) malloc(N * sizeof(float *));
+    for (int i = 0; i < N; i++) {
+        X[i] = &X_mem[i * D];
+    }
+
     // Inicialización de X, WK, WQ, WV
-    float X[6][4] = {{0, 6, 12, 18}, {1, 7, 13, 19}, {2, 8, 14, 20},
+    float X_values[6][4] = {{0, 6, 12, 18}, {1, 7, 13, 19}, {2, 8, 14, 20},
                      {3, 9, 15, 21}, {4, 10, 16, 22}, {5, 11, 17, 23}};
     float WK_values[4][4] = {{-0.2, -0.1, 0.0, 0.1}, {-0.2, -0.1, 0.0, 0.1},
                       {-0.2, -0.1, 0.0, 0.1}, {-0.2, -0.1, 0.0, 0.1}};
@@ -46,11 +52,17 @@ int main() {
         bV[i] = bV_values[i];
     }
 
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < D; i++) {
         for (int j = 0; j < D; j++) {
             WK[i][j] = WK_values[i][j];
             WQ[i][j] = WQ_values[i][j];
             WV[i][j] = WV_values[i][j];
+        }
+    }
+
+    for(int i = 0; i < N; i++) {
+        for(int j = 0; j < D; j++) {
+            X[i][j] = X_values[i][j];
         }
     }
 
