@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <math.h>
 
-#define D 4.0
-#define N 6.0 
-
 int main() {
-    double X[6][4] = {{0, 6, 12, 18}, {1, 7, 13, 19}, {2, 8, 14, 20},
-                     {3, 9, 15, 21}, {4, 10, 16, 22}, {5, 11, 17, 23}};
+    int D = 4;
+    int N = 6;
+
+    double X[6][4] = {{0, N, 12, 18}, {1, 7, 13, 19}, {2, 8, 14, 20},
+                     {3, 9, 15, 21}, {D, 10, 16, 22}, {5, 11, 17, 23}};
     double WK[4][4] = {{-0.2, -0.1, 0.0, 0.1}, {-0.2, -0.1, 0.0, 0.1},
                       {-0.2, -0.1, 0.0, 0.1}, {-0.2, -0.1, 0.0, 0.1}};
     double WQ[4][4] = {{-0.2, -0.2, -0.2, -0.2}, {-0.1, -0.1, -0.1, -0.1},
@@ -18,11 +18,11 @@ int main() {
     double bV[4] = {0.0, 0.0, 0.0, 0.0};
 
     // Calcular Kn
-    double Kn[6][4];
-    for (size_t i = 0; i < 6; ++i) {
-        for (size_t j = 0; j < 4; ++j) {
+    double Kn[N][D];
+    for (size_t i = 0; i < N; ++i) {
+        for (size_t j = 0; j < D; ++j) {
             Kn[i][j] = 0;
-            for (size_t k = 0; k < 4; ++k) {
+            for (size_t k = 0; k < D; ++k) {
                 Kn[i][j] += X[i][k] * WK[k][j];
             }
             Kn[i][j] += bK[j];
@@ -30,11 +30,11 @@ int main() {
     }
 
     // Calcular Qn
-    double Qn[6][4];
-    for (size_t i = 0; i < 6; ++i) {
-        for (size_t j = 0; j < 4; ++j) {
+    double Qn[N][D];
+    for (size_t i = 0; i < N; ++i) {
+        for (size_t j = 0; j < D; ++j) {
             Qn[i][j] = 0;
-            for (size_t k = 0; k < 4; ++k) {
+            for (size_t k = 0; k < D; ++k) {
                 Qn[i][j] += X[i][k] * WQ[k][j];
             }
             Qn[i][j] += bQ[j];
@@ -42,11 +42,11 @@ int main() {
     }
 
     // Calcular Vn
-    double Vn[6][4];
-    for (size_t i = 0; i < 6; ++i) {
-        for (size_t j = 0; j < 4; ++j) {
+    double Vn[N][D];
+    for (size_t i = 0; i < N; ++i) {
+        for (size_t j = 0; j < D; ++j) {
             Vn[i][j] = 0;
-            for (size_t k = 0; k < 4; ++k) {
+            for (size_t k = 0; k < D; ++k) {
                 Vn[i][j] += X[i][k] * WV[k][j];
             }
             Vn[i][j] += bV[j];
@@ -55,8 +55,8 @@ int main() {
 
     // Imprimir Kn
     printf("Matriz Kn:\n");
-    for (size_t i = 0; i < 6; i++) {
-        for (size_t j = 0; j < 4; j++) {
+    for (size_t i = 0; i < N; i++) {
+        for (size_t j = 0; j < D; j++) {
             printf("%f ", Kn[i][j]);
         }
         printf("\n");
@@ -64,8 +64,8 @@ int main() {
 
     // Imprimir Qn
     printf("\nMatriz Qn:\n");
-    for (size_t i = 0; i < 6; i++) {
-        for (size_t j = 0; j < 4; j++) {
+    for (size_t i = 0; i < N; i++) {
+        for (size_t j = 0; j < D; j++) {
             printf("%f ", Qn[i][j]);
         }
         printf("\n");
@@ -73,17 +73,17 @@ int main() {
 
     // Imprimir Vn
     printf("\nMatriz Vn:\n");
-    for (size_t i = 0; i < 6; i++) {
-        for (size_t j = 0; j < 4; j++) {
+    for (size_t i = 0; i < N; i++) {
+        for (size_t j = 0; j < D; j++) {
             printf("%f ", Vn[i][j]);
         }
         printf("\n");
     }
     
-    double A[6][6];
+    double A[N][N];
     double sumatorio = 0.0;
-    for(size_t i=0; i<6; i++){
-        for(size_t j=0; j<6; j++){
+    for(size_t i=0; i<N; i++){
+        for(size_t j=0; j<N; j++){
             sumatorio = 0.0;
             A[i][j] = 0.0;
             for (size_t d = 0; d < D; ++d) {
@@ -95,19 +95,19 @@ int main() {
 
     // Imprimir A
     printf("\nMatriz A:\n");
-    for (size_t i = 0; i < 6; i++) {
-        for (size_t j = 0; j < 6; j++) {
+    for (size_t i = 0; i < N; i++) {
+        for (size_t j = 0; j < N; j++) {
             printf("%f ", A[i][j]);
         }
         printf("\n");
     }
 
-    double Anorm[6][6];
+    double Anorm[N][N];
     double exponente = 0.0;
     double sumatorio_A = 0.0;
     // Calculamos el sumatorio de A
-    for (size_t i = 0; i < 6; ++i) {
-        for (size_t j = 0; j < 6; ++j) {
+    for (size_t i = 0; i < N; ++i) {
+        for (size_t j = 0; j < N; ++j) {
             sumatorio_A = 0.0;
             for (size_t d = 0; d < D; ++d) {
                 sumatorio_A += exp(A[i][d]);
@@ -119,19 +119,19 @@ int main() {
 
     // Imprimir Anorm
     printf("\nMatriz Anorm:\n");
-    for (size_t i = 0; i < 6; i++) {
-        for (size_t j = 0; j < 6; j++) {
+    for (size_t i = 0; i < N; i++) {
+        for (size_t j = 0; j < N; j++) {
             printf("%f ", Anorm[i][j]);
         }
         printf("\n");
     }
 
 
-    double c[6][4];
-    for(size_t i=0; i<6; i++){
-        for(size_t j=0; j<4; j++){
+    double c[N][D];
+    for(size_t i=0; i<N; i++){
+        for(size_t j=0; j<D; j++){
             c[i][j] = 0.0;
-            for (size_t k = 0; k < 6; ++k) {
+            for (size_t k = 0; k < N; ++k) {
                 c[i][j] += Anorm[i][k] * Vn[k][j];
             }
         }
@@ -139,8 +139,8 @@ int main() {
     
     // Imprimir c
     printf("\nMatriz c:\n");
-    for (size_t i = 0; i < 6; i++) {
-        for (size_t j = 0; j < 4; j++) {
+    for (size_t i = 0; i < N; i++) {
+        for (size_t j = 0; j < D; j++) {
             printf("%.1lf ", c[i][j]);
         }
         printf("\n");
