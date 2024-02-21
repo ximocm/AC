@@ -5,7 +5,11 @@ int main() {
     int D = 4;
     int N = 6;
 
-    double X[6][4] = {{0, N, 12, 18}, {1, 7, 13, 19}, {2, 8, 14, 20},
+    double **bK = (int *) malloc (sizeof(int) *N);
+    double **bQ = (int *) malloc (sizeof(int) *N);
+    double **bV = (int *) malloc (sizeof(int) *N);
+
+    double X[6][4] = {{0, 6, 12, 18}, {1, 7, 13, 19}, {2, 8, 14, 20},
                      {3, 9, 15, 21}, {D, 10, 16, 22}, {5, 11, 17, 23}};
     double WK[4][4] = {{-0.2, -0.1, 0.0, 0.1}, {-0.2, -0.1, 0.0, 0.1},
                       {-0.2, -0.1, 0.0, 0.1}, {-0.2, -0.1, 0.0, 0.1}};
@@ -13,9 +17,10 @@ int main() {
                       {0.0, 0.0, 0.0, 0.0}, {0.1, 0.1, 0.1, 0.1}};
     double WV[4][4] = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0},
                       {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
-    double bK[4] = {-1.0, -1.0, -1.0, -1.0};
-    double bQ[4] = {0.1, 0.1, 0.1, 0.1};
-    double bV[4] = {0.0, 0.0, 0.0, 0.0};
+    
+    double bK_values[4] = {-1.0, -1.0, -1.0, -1.0};
+    double bQ_values[4] = {0.1, 0.1, 0.1, 0.1};
+    double bV_values[4] = {0.0, 0.0, 0.0, 0.0};
 
     // Calcular Kn
     double Kn[N][D];
@@ -25,7 +30,7 @@ int main() {
             for (size_t k = 0; k < D; ++k) {
                 Kn[i][j] += X[i][k] * WK[k][j];
             }
-            Kn[i][j] += bK[j];
+            Kn[i][j] += *bK[j];
         }
     }
 
@@ -109,7 +114,7 @@ int main() {
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < N; ++j) {
             sumatorio_A = 0.0;
-            for (size_t d = 0; d < D; ++d) {
+            for (size_t d = 0; d < N; ++d) {
                 sumatorio_A += exp(A[i][d]);
             }
             exponente = exp(A[i][j]); // Calculamos A[i][j]
