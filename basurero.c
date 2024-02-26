@@ -135,9 +135,9 @@ int main(int argc, char *argv[]) {
         double WV_values[D][D];
         for (int i = 0; i < D; i++) {
             for (int j = 0; j < D; j++) {
-                WK_values[i][j] = 0.001*(rand() / (double)RAND_MAX) - 0.5;
-                WQ_values[i][j] = 0.001*(rand() / (double)RAND_MAX) - 0.5;
-                WV_values[i][j] = 0.001*(rand() / (double)RAND_MAX) - 0.5;
+                WK_values[i][j] = 0.001*(rand() / (float)RAND_MAX) - 0.5;
+                WQ_values[i][j] = 0.001*(rand() / (float)RAND_MAX) - 0.5;
+                WV_values[i][j] = 0.001*(rand() / (float)RAND_MAX) - 0.5;
             }
         }
 
