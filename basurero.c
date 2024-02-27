@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
         double X_values[N][D];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < D; j++) {
-                X_values[i][j] = (float)rand()/RAND_MAX * 4.0;
+                X_values[i][j] = (float)rand()/RAND_MAX * 10.0;
             }
         }
 
@@ -135,9 +135,9 @@ int main(int argc, char *argv[]) {
         double WV_values[D][D];
         for (int i = 0; i < D; i++) {
             for (int j = 0; j < D; j++) {
-                WK_values[i][j] = 0.001*(rand() / (float)RAND_MAX) - 0.5;
-                WQ_values[i][j] = 0.001*(rand() / (float)RAND_MAX) - 0.5;
-                WV_values[i][j] = 0.001*(rand() / (float)RAND_MAX) - 0.5;
+                WK_values[i][j] = 0.001*((rand() / (float)RAND_MAX) - 0.5);
+                WQ_values[i][j] = 0.001*((rand() / (float)RAND_MAX) - 0.5);
+                WV_values[i][j] = 0.001*((rand() / (float)RAND_MAX) - 0.5);
             }
         }
 
@@ -282,7 +282,7 @@ int main(int argc, char *argv[]) {
     printf("\nMatriz c:\n");
     for (size_t i = 0; i < N; i++) {
         for (size_t j = 0; j < D; j++) {
-            printf("%.1lf ", c[i][j]);
+            printf("%.3lf ", c[i][j]);
         }
         printf("\n");
     }
