@@ -51,9 +51,9 @@ int main(int argc, char *argv[]) {
 
     if (!debug) {
         D = atoi(argv[2]);
-        printf("D: %d\n", D);
+        //printf("D: %d\n", D);
         N = atoi(argv[3]);
-        printf("N: %d\n", N);
+        //printf("N: %d\n", N);
     }
     else {
         D = 4;
@@ -125,13 +125,6 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        //print X_values
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < D; j++) {
-                printf("%f ", X_values[i][j]);
-            }
-            printf("\n");
-        }
 
         double WK_values[D][D];
         double WQ_values[D][D];
@@ -159,11 +152,15 @@ int main(int argc, char *argv[]) {
         }
     }
 
-
+    printf("Punto de control 1");
     start = clock();    
 
     // Calcular Kn
-    double Kn[N][D];
+    double *Kn_mem = (double *) malloc(N * D * sizeof(double));
+    double **Kn = (double **) malloc(N * sizeof(double *));
+    for (int i = 0; i < N; i++) {
+        Kn[i] = &Kn_mem[i * D];
+    }
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < D; ++j) {
             Kn[i][j] = 0;
@@ -173,9 +170,15 @@ int main(int argc, char *argv[]) {
             Kn[i][j] += bK[j];
         }
     }
+    
+    free(bK);
 
     // Calcular Qn
-    double Qn[N][D];
+    double *Qn_mem = (double *) malloc(N * D * sizeof(double));
+    double **Qn = (double **) malloc(N * sizeof(double *));
+    for (int i = 0; i < N; i++) {
+        Qn[i] = &Qn_mem[i * D];
+    }
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < D; ++j) {
             Qn[i][j] = 0;
@@ -186,8 +189,14 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    free(bQ);
+
     // Calcular Vn
-    double Vn[N][D];
+    double *Vn_mem = (double *) malloc(N * D * sizeof(double));
+    double **Vn = (double **) malloc(N * sizeof(double *));
+    for (int i = 0; i < N; i++) {
+        Vn[i] = &Vn_mem[i * D];
+    }
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < D; ++j) {
             Vn[i][j] = 0;
@@ -198,7 +207,14 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    double A[N][N];
+    free(bV);
+    printf("Punto de control 2");
+
+    double *A_mem = (double *) malloc(N * N * sizeof(double));
+    double **A = (double **) malloc(N * sizeof(double *));
+    for (int i = 0; i < N; i++) {
+        A[i] = &A_mem[i * N];
+    }
     double sumatorio = 0.0;
     for(size_t i=0; i<N; i++){
         for(size_t j=0; j<N; j++){
@@ -211,7 +227,18 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    double Anorm[N][N];
+    free(Kn_mem);
+    free(Kn);
+    free(Qn_mem);
+    free(Qn);
+    free(X_mem);
+    free(X);
+
+    double *Anorm_mem = (double *) malloc(N * N * sizeof(double));
+    double **Anorm = (double **) malloc(N * sizeof(double *));
+    for (int i = 0; i < N; i++) {
+        Anorm[i] = &Anorm_mem[i * N];
+    }
     double exponente = 0.0;
     double sumatorio_A = 0.0;
     // Calculamos el sumatorio de A
@@ -226,8 +253,17 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    printf("Punto de control 3");
 
-    double c[N][D];
+    free(A_mem);
+    free(A);
+
+
+    double *c_mem = (double *) malloc(N * D * sizeof(double));
+    double **c = (double **) malloc(N * sizeof(double *));
+    for (int i = 0; i < N; i++) {
+        c[i] = &c_mem[i * D];
+    }
     for(size_t i=0; i<N; i++){
         for(size_t j=0; j<D; j++){
             c[i][j] = 0.0;
@@ -237,22 +273,12 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    free(Vn_mem);
+
     end = clock();
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
     printf("Tiempo de ejecución: %f\n", cpu_time_used);
-
-    free(bK);
-    free(bQ);
-    free(bV);
-    free(WK_mem);
-    free(WQ_mem);
-    free(WV_mem);
-    free(WK);
-    free(WQ);
-    free(WV);
-    free(X_mem);
-    free(X);
 
     return 0;
 
