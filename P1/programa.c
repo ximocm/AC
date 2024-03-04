@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
 
     clock_t start, end;
     double cpu_time_used;
-
+    
     srand(time(NULL));
 
     bool debug = false;
@@ -159,7 +159,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    start = clock();
+
+    start = clock();    
 
     // Calcular Kn
     double Kn[N][D];
@@ -197,33 +198,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Imprimir Kn
-    printf("Matriz Kn:\n");
-    for (size_t i = 0; i < N; i++) {
-        for (size_t j = 0; j < D; j++) {
-            printf("%f ", Kn[i][j]);
-        }
-        printf("\n");
-    }
-
-    // Imprimir Qn
-    printf("\nMatriz Qn:\n");
-    for (size_t i = 0; i < N; i++) {
-        for (size_t j = 0; j < D; j++) {
-            printf("%f ", Qn[i][j]);
-        }
-        printf("\n");
-    }
-
-    // Imprimir Vn
-    printf("\nMatriz Vn:\n");
-    for (size_t i = 0; i < N; i++) {
-        for (size_t j = 0; j < D; j++) {
-            printf("%f ", Vn[i][j]);
-        }
-        printf("\n");
-    }
-    
     double A[N][N];
     double sumatorio = 0.0;
     for(size_t i=0; i<N; i++){
@@ -235,15 +209,6 @@ int main(int argc, char *argv[]) {
             }
             A[i][j] += sumatorio/sqrt(D);
         }
-    }
-
-    // Imprimir A
-    printf("\nMatriz A:\n");
-    for (size_t i = 0; i < N; i++) {
-        for (size_t j = 0; j < N; j++) {
-            printf("%f ", A[i][j]);
-        }
-        printf("\n");
     }
 
     double Anorm[N][N];
@@ -261,15 +226,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Imprimir Anorm
-    printf("\nMatriz Anorm:\n");
-    for (size_t i = 0; i < N; i++) {
-        for (size_t j = 0; j < N; j++) {
-            printf("%f ", Anorm[i][j]);
-        }
-        printf("\n");
-    }
-
 
     double c[N][D];
     for(size_t i=0; i<N; i++){
@@ -279,15 +235,6 @@ int main(int argc, char *argv[]) {
                 c[i][j] += Anorm[i][k] * Vn[k][j];
             }
         }
-    }
-    
-    // Imprimir c
-    printf("\nMatriz c:\n");
-    for (size_t i = 0; i < N; i++) {
-        for (size_t j = 0; j < D; j++) {
-            printf("%.3lf ", c[i][j]);
-        }
-        printf("\n");
     }
 
     end = clock();
