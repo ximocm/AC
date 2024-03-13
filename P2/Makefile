@@ -1,3 +1,3 @@
 all:main
 main: main.c
-	gcc -fopenmp main.c -o main
+	gcc main.c -o main -g -lm -Wall -fopenmp

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <omp.h>
 
 typedef enum { false, true } bool;  // Definición de tipo booleano
 
@@ -212,40 +213,25 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    /* INICIO DEL PROGRAMA */
+
     printf("Punto de control 1");
     start = clock();    
 
-    // Calcular Kn
+    // Calcular Kn, Qn, Vn
+    #pragma omp parallel for collapse(2)
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < D; ++j) {
             Kn[i][j] = 0;
-            for (size_t k = 0; k < D; ++k) {
-                Kn[i][j] += X[i][k] * WK[k][j];
-            }
-            Kn[i][j] += bK[j];
-        }
-    }
-    
-
-    // Calcular Qn
-    for (size_t i = 0; i < N; ++i) {
-        for (size_t j = 0; j < D; ++j) {
             Qn[i][j] = 0;
-            for (size_t k = 0; k < D; ++k) {
-                Qn[i][j] += X[i][k] * WQ[k][j];
-            }
-            Qn[i][j] += bQ[j];
-        }
-    }
-
-
-    // Calcular Vn
-    for (size_t i = 0; i < N; ++i) {
-        for (size_t j = 0; j < D; ++j) {
             Vn[i][j] = 0;
             for (size_t k = 0; k < D; ++k) {
+                Kn[i][j] += X[i][k] * WK[k][j];
+                Qn[i][j] += X[i][k] * WQ[k][j];
                 Vn[i][j] += X[i][k] * WV[k][j];
             }
+            Kn[i][j] += bK[j];
+            Qn[i][j] += bQ[j];
             Vn[i][j] += bV[j];
         }
     }
