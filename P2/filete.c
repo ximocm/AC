@@ -149,7 +149,66 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Repite este patrón para Qn, Vn, A, Anorm, c...
+       // Calcular Qn
+    #pragma omp parallel for collapse(2)
+    for (size_t i = 0; i < N; ++i) {
+        for (size_t j = 0; j < D; ++j) {
+            Qn[i][j] = 0;
+            for (size_t k = 0; k < D; ++k) {
+                Qn[i][j] += X[i][k] * WQ[k][j];
+            }
+            Qn[i][j] += bQ[j];
+        }
+    }
+
+    // Calcular Vn
+    #pragma omp parallel for collapse(2)
+    for (size_t i = 0; i < N; ++i) {
+        for (size_t j = 0; j < D; ++j) {
+            Vn[i][j] = 0;
+            for (size_t k = 0; k < D; ++k) {
+                Vn[i][j] += X[i][k] * WV[k][j];
+            }
+            Vn[i][j] += bV[j];
+        }
+    }
+
+    // Calcular A
+    #pragma omp parallel for collapse(2) private(sumatorio)
+    for(size_t i = 0; i < N; i++){
+        for(size_t j = 0; j < N; j++){
+            sumatorio = 0.0;
+            for (size_t d = 0; d < D; ++d) {
+                sumatorio += Qn[i][d] * Kn[j][d];
+            }
+            A[i][j] = sumatorio / sqrt(D);
+        }
+    }
+
+    // Calcular Anorm
+    #pragma omp parallel for collapse(2) private(exponente, sumatorio_A)
+    for (size_t i = 0; i < N; ++i) {
+        for (size_t j = 0; j < N; ++j) {
+            sumatorio_A = 0.0;
+            for (size_t d = 0; d < N; ++d) {
+                sumatorio_A += exp(A[i][d]);
+            }
+            exponente = exp(A[i][j]);
+            Anorm[i][j] = exponente / sumatorio_A;
+        }
+    }
+
+    // Calcular c
+    #pragma omp parallel for collapse(2)
+    for(size_t i = 0; i < N; i++){
+        for(size_t j = 0; j < D; j++){
+            c[i][j] = 0.0;
+            for (size_t k = 0; k < N; ++k) {
+                c[i][j] += Anorm[i][k] * Vn[k][j];
+            }
+        }
+    }
+
 
     end = clock();
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
