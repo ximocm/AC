@@ -176,39 +176,19 @@ int main(int argc, char *argv[]) {
 
     }
     else{
-        double X_values[N][D];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < D; j++) {
-                X_values[i][j] = (float)rand()/RAND_MAX * 10.0;
+                X[i][j] = (float)rand()/RAND_MAX * 10.0;
             }
         }
 
         printf("Asignación de valores entrada\n");
-
         
         for (int i = 0; i < D; i++) {
             for (int j = 0; j < D; j++) {
-                WK_values[i][j] = 0.001*((rand() / (float)RAND_MAX) - 0.5);
-                WQ_values[i][j] = 0.001*((rand() / (float)RAND_MAX) - 0.5);
-                WV_values[i][j] = 0.001*((rand() / (float)RAND_MAX) - 0.5);
-            }
-        }
-
-        printf ("Asignación de valores aleatorios\n");
-
-        for (int i = 0; i < D; i++) {
-            for (int j = 0; j < D; j++) {
-                WK[i][j] = WK_values[i][j];
-                WQ[i][j] = WQ_values[i][j];
-                WV[i][j] = WV_values[i][j];
-            }
-        }
-
-        printf("Asignación de valores pesos\n");
-
-        for(int i = 0; i < N; i++) {
-            for(int j = 0; j < D; j++) {
-                X[i][j] = X_values[i][j];
+                WK[i][j] = 0.001*((rand() / (float)RAND_MAX) - 0.5);
+                WQ[i][j] = 0.001*((rand() / (float)RAND_MAX) - 0.5);
+                WV[i][j] = 0.001*((rand() / (float)RAND_MAX) - 0.5);
             }
         }
     }
@@ -261,6 +241,8 @@ int main(int argc, char *argv[]) {
         printf("\n");
     }
     */
+
+   printf("Punto de control 3\n");
     
 
     double exponente = 0.0;
@@ -278,7 +260,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    printf("Punto de control 3\n");
+    printf("Punto de control 4\n");
 
 
     #pragma omp parallel for collapse(2)
@@ -292,7 +274,7 @@ int main(int argc, char *argv[]) {
     }
 
     end = omp_get_wtime();
-    cpu_time_used = end - start;
+        cpu_time_used = end - start;
 
     printf("Tiempo de ejecución: %f\n", cpu_time_used);
 
