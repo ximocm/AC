@@ -9,7 +9,7 @@ typedef enum { false, true } bool;  // Definición de tipo booleano
 
 int main(int argc, char *argv[]) {
 
-    clock_t start, end;
+    double start, end;
     double cpu_time_used;
     
     srand(time(NULL));
@@ -215,8 +215,8 @@ int main(int argc, char *argv[]) {
 
     /* INICIO DEL PROGRAMA */
 
-    printf("Punto de control 1");
-    start = clock();    
+    printf("Punto de control 1\n");
+    start = omp_get_wtime();
 
     // Calcular Kn, Qn, Vn
     #pragma omp parallel for collapse(2)
@@ -235,11 +235,13 @@ int main(int argc, char *argv[]) {
             Vn[i][j] += bV[j];
         }
     }
+    
 
-    printf("Punto de control 2");
+    printf("Punto de control 2\n");
 
 
     double sumatorio = 0.0;
+    #pragma omp parallel for collapse(2) private(sumatorio)
     for(size_t i=0; i<N; i++){
         for(size_t j=0; j<N; j++){
             sumatorio = 0.0;
@@ -251,10 +253,19 @@ int main(int argc, char *argv[]) {
         }
     }
 
-
+    /*
+    for (size_t i = 0; i < N; ++i) {
+        for (size_t j = 0; j < N; ++j) {
+            printf("%f ", A[i][j]);
+        }
+        printf("\n");
+    }
+    */
     
+
     double exponente = 0.0;
     double sumatorio_A = 0.0;
+    #pragma omp parallel for collapse(2) private(exponente, sumatorio_A)
     // Calculamos el sumatorio de A
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < N; ++j) {
@@ -267,10 +278,10 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    printf("Punto de control 3");
+    printf("Punto de control 3\n");
 
 
-    
+    #pragma omp parallel for collapse(2)
     for(size_t i=0; i<N; i++){
         for(size_t j=0; j<D; j++){
             c[i][j] = 0.0;
@@ -280,10 +291,41 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    end = clock();
-    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    end = omp_get_wtime();
+    cpu_time_used = end - start;
 
     printf("Tiempo de ejecución: %f\n", cpu_time_used);
+
+    free(bK);
+    free(bQ);
+    free(bV);
+    free(WK_mem);
+    free(WQ_mem);
+    free(WV_mem);
+    free(WK);
+    free(WQ);
+    free(WV);
+    free(X_mem);
+    free(X);
+    free(Kn_mem);
+    free(Kn);
+    free(Qn_mem);
+    free(Qn);
+    free(Vn_mem);
+    free(Vn);
+    free(A_mem);
+    free(A);
+    free(Anorm_mem);
+    free(Anorm);
+    free(c_mem);
+    free(c);
+    free(WK_values_mem);
+    free(WQ_values_mem);
+    free(WV_values_mem);
+    free(WK_values);
+    free(WQ_values);
+    free(WV_values);
+
 
     return 0;
 
