@@ -196,10 +196,12 @@ int main(int argc, char *argv[]) {
     /* INICIO DEL PROGRAMA */
 
     printf("Punto de control 1\n");
+    omp_set_dynamic(0);
+    omp_set_num_threads(2);
     start = omp_get_wtime();
 
     // Calcular Kn, Qn, Vn
-    #pragma omp parallel for collapse(2)
+    #pragma omp parallel for collapse(2) schedule(static)
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < D; ++j) {
             Kn[i][j] = 0;
@@ -221,7 +223,7 @@ int main(int argc, char *argv[]) {
 
 
     double sumatorio = 0.0;
-    #pragma omp parallel for collapse(2) private(sumatorio)
+    #pragma omp parallel for collapse(2) schedule(static) private(sumatorio)
     for(size_t i=0; i<N; i++){
         for(size_t j=0; j<N; j++){
             sumatorio = 0.0;
@@ -247,7 +249,7 @@ int main(int argc, char *argv[]) {
 
     double exponente = 0.0;
     double sumatorio_A = 0.0;
-    #pragma omp parallel for collapse(2) private(exponente, sumatorio_A)
+    #pragma omp parallel for collapse(2) schedule(static) private(exponente, sumatorio_A)
     // Calculamos el sumatorio de A
     for (size_t i = 0; i < N; ++i) {
         for (size_t j = 0; j < N; ++j) {
@@ -263,7 +265,7 @@ int main(int argc, char *argv[]) {
     printf("Punto de control 4\n");
 
 
-    #pragma omp parallel for collapse(2)
+    #pragma omp parallel for collapse(2) schedule(static)
     for(size_t i=0; i<N; i++){
         for(size_t j=0; j<D; j++){
             c[i][j] = 0.0;
@@ -272,6 +274,7 @@ int main(int argc, char *argv[]) {
             }
         }
     }
+    
 
     end = omp_get_wtime();
         cpu_time_used = end - start;
