@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
     double **A = (double **)malloc(N * sizeof(double *));
     double **Anorm = (double **)malloc(N * sizeof(double *));
     double **c = (double **)malloc(N * sizeof(double *));
-    
+
     for (int i = 0; i < N; ++i) {
         Qn[i] = (double *)malloc(D * sizeof(double));
         Kn[i] = (double *)malloc(D * sizeof(double));
@@ -93,4 +93,7 @@ int main(int argc, char *argv[]) {
 
     MPI_Allreduce(MPI_IN_PLACE, *Anorm, N * N, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
-    printf("Punto de
+    printf("Tiempo de ejecución: %f\n", cpu_time_used);
+
+    return 0;
+}
