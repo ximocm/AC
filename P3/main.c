@@ -87,6 +87,17 @@ int main(int argc, char *argv[]) {
                         {0.0, 0.0, 0.0, 0.0}, {0.1, 0.1, 0.1, 0.1}};
         double WV_values[4][4] = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0},
                         {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+        double bK_values[4] = {-1.0 , -1.0, -1.0, -1.0, };
+
+        double bQ_values[4] = {0.1, 0.1, 0.1, 0.1};
+
+        double bV_values[4] = {0.0, 0.0, 0.0, 0.0};
+
+        for (int i = 0; i < D; i++) {
+            bK[i] = bK_values[i];
+            bQ[i] = bQ_values[i];
+            bV[i] = bV_values[i];
+        }
 
         for (int i = 0; i < D; i++) {
             for (int j = 0; j < D; j++) {
@@ -273,19 +284,38 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    //Mostrar Anorm_local
+    if (rank == 0) {
+        printf("Mostrar Anorm_local\n");
+        for (size_t i = 0; i < N/size; ++i) {
+            for (size_t j = 0; j < D; ++j) {
+                printf("%f ", Anorm_local[i*D+j]);
+            }
+            printf("\n");
+        }
+    }
+
    printf("Punto de control 3\n");
     
-    double exponente = 0.0;
     double sumatorio_A = 0.0;
     // Calculamos el sumatorio de A
     for (size_t i = 0; i < N/size; ++i) {
-        for (size_t j = 0; j < N; ++j) {
-            sumatorio_A = 0.0;
-            for (size_t d = 0; d < N; ++d) {
+        sumatorio_A = 0.0;
+        for (size_t d = 0; d < N; ++d) {
                 sumatorio_A += exp(Anorm_local[i*N+d]);
+        }
+        for (size_t j = 0; j < N; ++j) {
+            Anorm_local[i*N+j] =  exp(Anorm_local[i*N+j])/sumatorio_A; // Calculamos Anorm_local[i][j]
+        }
+    }
+
+    if (rank == 0) {
+        printf("Mostrar Anorm_local\n");
+        for (size_t i = 0; i < N/size; ++i) {
+            for (size_t j = 0; j < D; ++j) {
+                printf("%f ", Anorm_local[i*D+j]);
             }
-            exponente = exp(Anorm_local[i*N+j]); // Calculamos A[i][j]
-            Anorm_local[i*N+j] = exponente/sumatorio_A; // Calculamos Anorm_local[i][j]
+            printf("\n");
         }
     }
 
