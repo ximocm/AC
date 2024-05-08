@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     srand(time(NULL));
 
     bool debug = true;
-/*
+
     printf("argc: %d\n", argc);
     printf("argv[0]: %s\n", argv[0]);
     printf("argv[1]: %s\n", argv[1]);
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
         printf("Uso: %s\n", argv[0]);
         return 1;
     }
-*/
+
     int D;
     int N;
 
@@ -133,6 +133,8 @@ int main(int argc, char *argv[]) {
     }
 
     //Mostrar X
+    /*
+    
     if (rank == 0) {
         printf("Mostrar X\n");
         for (size_t i = 0; i < N; ++i) {
@@ -177,7 +179,7 @@ int main(int argc, char *argv[]) {
             printf("\n");
         }
     }
-
+    */
     MPI_Init(&argc, &argv);
     start = MPI_Wtime();
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -235,7 +237,7 @@ int main(int argc, char *argv[]) {
     MPI_Allgather(qn_local, (N/size)*D, MPI_DOUBLE, Qn, (N/size)*D, MPI_DOUBLE, MPI_COMM_WORLD);
 
     //Mostrar Kn_local
-    
+    /*
     if (rank == 0) {
         printf("Mostrar Kn_local\n");
         for (size_t i = 0; i < N/size; ++i) {
@@ -294,7 +296,7 @@ int main(int argc, char *argv[]) {
             printf("\n");
         }
     }
-
+    */
    printf("Punto de control 3\n");
     
     double sumatorio_A = 0.0;
@@ -309,6 +311,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    /*
     if (rank == 0) {
         printf("Mostrar Anorm_local\n");
         for (size_t i = 0; i < N/size; ++i) {
@@ -318,6 +321,7 @@ int main(int argc, char *argv[]) {
             printf("\n");
         }
     }
+    */
 
     printf("Punto de control 4\n");
 
@@ -331,14 +335,10 @@ int main(int argc, char *argv[]) {
     }
 
     printf("Punto de control 5\n");
-    
-    end = 410;
-        cpu_time_used = end - start;
-
-    printf("Tiempo de ejecución: %f\n", cpu_time_used);
 
     MPI_Gather(c_local, (N/size)*D, MPI_DOUBLE, c, (N/size)*D, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
+    /*
     //Mostramos c
     if (rank == 0) {
         for (size_t i = 0; i < N; ++i) {
@@ -347,6 +347,14 @@ int main(int argc, char *argv[]) {
             }
             printf("\n");
         }
+    }
+    */
+
+   if(rank == 0){
+        end = MPI_Wtime();
+        cpu_time_used = end - start;
+        printf("Tiempo de ejecución: %f\n", cpu_time_used);
+
     }
 
     MPI_Finalize();
